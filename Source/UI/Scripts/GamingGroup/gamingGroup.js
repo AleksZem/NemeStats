@@ -23,6 +23,11 @@ Views.GamingGroup.GamingGroupView = function () {
         recentTabId: null,
         recentDivId: null
     };
+    // These are routed methods that act as an HttpGet. They are viewable in GameingGroupController.cs
+    // I wonder if there's a better way to do this 
+
+    // Making a namechange here could cause problems. This is a negative in terms of maintainability.
+
     this._getGamingGroupPlayersServiceAddress = "/GamingGroup/GetGamingGroupPlayers/";
     this._getGamingGroupGameDefinitionsServiceAddress = "/GamingGroup/GetGamingGroupGameDefinitions/";
     this._getGamingGroupPlayedGamesServiceAddress = "/GamingGroup/GetGamingGroupPlayedGames/";
@@ -40,7 +45,7 @@ Views.GamingGroup.GamingGroupView = function () {
         PLAYS: "plays",
         STATS: "stats",
         RECENT: "recent"
-    }
+    };
 };
 
 //Implementation
@@ -49,79 +54,13 @@ Views.GamingGroup.GamingGroupView.prototype = {
         var owner = this;
         this._googleAnalytics = gaObject;
 
-        if (options.gamingGroupId == null) {
-            throw "gamingGroupId is required for panels to be able to load.";
-        }
-        this._settings.gamingGroupId = options.gamingGroupId;
+        // Validate
+        owner.validateOptions(options);
 
-        if (options.dateFilterButtonId == null) {
-            throw "dateFilterButtonId is required.";
-        }
-        this._settings.dateFilterButtonId = options.dateFilterButtonId;
-
-        if (options.playersTabId == null) {
-            throw "playersTabId is required.";
-        }
-        this._settings.playersTabId = options.playersTabId;
-
-        if (options.playersDivId == null) {
-            throw "playersDivId is required.";
-        }
-        this._settings.playersDivId = options.playersDivId;
-
-        if (options.gamesTabId == null) {
-            throw "gamesTabId is required.";
-        }
-        this._settings.gamesTabId = options.gamesTabId;
-
-        if (options.gamesDivId == null) {
-            throw "gamesDivId is required.";
-        }
-        this._settings.gamesDivId = options.gamesDivId;
-
-        if (options.playedGamesTabId == null) {
-            throw "playedGamesTabId is required.";
-        }
-        this._settings.playedGamesTabId = options.playedGamesTabId;
-
-        if (options.playedGamesDivId == null) {
-            throw "playedGamesDivId is required.";
-        }
-        this._settings.playedGamesDivId = options.playedGamesDivId;
-
-        if (options.statsTabId == null) {
-            throw "statsTabId is required.";
-        }
-        this._settings.statsTabId = options.statsTabId;
-
-        if (options.statsDivId == null) {
-            throw "statsDivId is required.";
-        }
-        this._settings.statsDivId = options.statsDivId;
-
-        if (options.recentTabId == null) {
-            throw "recentTabId is required.";
-        }
-        this._settings.recentTabId = options.recentTabId;
-
-        if (options.recentDivId == null) {
-            throw "recentDivId is required.";
-        }
-        this._settings.recentDivId = options.recentDivId;
-
-        this._settings.gamingGroupId = options.gamingGroupId;
-
-        if (options.fromDate != null) {
-            this._settings.fromDate = options.fromDate;
-        }
-
-        if (options.toDate != null) {
-            this._settings.toDate = options.toDate;
-        }
-
+        // lots of date picking bullshit
         this.$fromDatePicker = $("#from-date-picker");
         this.$toDatePicker = $("#to-date-picker");
-        var minDate = new Date(2000, 0, 1);
+        var minDate = new Date(2000, 0, 1); // Hard coded values?
         var currentMoment = moment();
 
         if (Modernizr.inputtypes.date) {
@@ -154,7 +93,7 @@ Views.GamingGroup.GamingGroupView.prototype = {
             }).datepicker("setDate", this._settings.toDate)
               .datepicker("option", "dateFormat", "yy-mm-dd");
         }
-
+        // end date picking bullshit
 
         var $playersTab = $("#" + this._settings.playersTabId);
         $playersTab.click((function (event) {
@@ -293,7 +232,7 @@ Views.GamingGroup.GamingGroupView.prototype = {
             success: function (html) {
                 $("#" + divIdForRenderingResults).html(html);
                 var playedGamesValues = ['game-item', 'name-col','result-col'];
-                var playedGamesTableID = "playedGamesList"
+                var playedGamesTableID = "playedGamesList";
                 if (ResponsiveBootstrapToolkit.is('>=md')) {
                     new List(playedGamesTableID, { valueNames: playedGamesValues, page: 8, plugins: [ListPagination({ innerWindow: 12 })] });
                 } else {
@@ -385,7 +324,9 @@ Views.GamingGroup.GamingGroupView.prototype = {
                             .datum(playerData)
                             .call(chart);
 
-                        nv.utils.windowResize(function () { chart.update() });
+                        nv.utils.windowResize(function () { 
+                            chart.update(); 
+                        });
                     });
 
                     var layout = new Views.Shared.Layout();
@@ -486,7 +427,7 @@ Views.GamingGroup.GamingGroupView.prototype = {
     updateUrl: function (newTab, iso8601FromDate, iso8601ToDate) {
         if (history.pushState) {
             var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            var params = new Object();
+            var params = new Object({});
 
             if (iso8601FromDate) {
                 params.Iso8601FromDate = iso8601FromDate;
@@ -507,9 +448,80 @@ Views.GamingGroup.GamingGroupView.prototype = {
 
             window.history.pushState({ path: newUrl }, "", newUrl);
         }
+    },
+    validateOptions: function (options) {
+        if (options.gamingGroupId == null) {
+            throw "gamingGroupId is required for panels to be able to load.";
+        }
+        this._settings.gamingGroupId = options.gamingGroupId;
+
+        if (options.dateFilterButtonId == null) {
+            throw "dateFilterButtonId is required.";
+        }
+        this._settings.dateFilterButtonId = options.dateFilterButtonId;
+
+        if (options.playersTabId == null) {
+            throw "playersTabId is required.";
+        }
+        this._settings.playersTabId = options.playersTabId;
+
+        if (options.playersDivId == null) {
+            throw "playersDivId is required.";
+        }
+        this._settings.playersDivId = options.playersDivId;
+
+        if (options.gamesTabId == null) {
+            throw "gamesTabId is required.";
+        }
+        this._settings.gamesTabId = options.gamesTabId;
+
+        if (options.gamesDivId == null) {
+            throw "gamesDivId is required.";
+        }
+        this._settings.gamesDivId = options.gamesDivId;
+
+        if (options.playedGamesTabId == null) {
+            throw "playedGamesTabId is required.";
+        }
+        this._settings.playedGamesTabId = options.playedGamesTabId;
+
+        if (options.playedGamesDivId == null) {
+            throw "playedGamesDivId is required.";
+        }
+        this._settings.playedGamesDivId = options.playedGamesDivId;
+
+        if (options.statsTabId == null) {
+            throw "statsTabId is required.";
+        }
+        this._settings.statsTabId = options.statsTabId;
+
+        if (options.statsDivId == null) {
+            throw "statsDivId is required.";
+        }
+        this._settings.statsDivId = options.statsDivId;
+
+        if (options.recentTabId == null) {
+            throw "recentTabId is required.";
+        }
+        this._settings.recentTabId = options.recentTabId;
+
+        if (options.recentDivId == null) {
+            throw "recentDivId is required.";
+        }
+        this._settings.recentDivId = options.recentDivId;
+
+        this._settings.gamingGroupId = options.gamingGroupId;
+
+        if (options.fromDate != null) {
+            this._settings.fromDate = options.fromDate;
+        }
+
+        if (options.toDate != null) {
+            this._settings.toDate = options.toDate;
+        }
     }
-}
+};
 
 var clickElement = function (elementId) {
     $("#" + elementId).click();
-}
+};

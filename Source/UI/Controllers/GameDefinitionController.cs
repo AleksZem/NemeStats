@@ -60,6 +60,7 @@ namespace UI.Controllers
         private readonly ITransformer _transformer;
         private readonly ICreateGameDefinitionComponent _createGameDefinitionComponent;
 
+
         public GameDefinitionController(IGameDefinitionRetriever gameDefinitionRetriever,
             IPlayerRetriever playerRetriever,
             ITrendingGamesRetriever trendingGamesRetriever,
