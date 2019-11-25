@@ -44,7 +44,7 @@ namespace BusinessLogic.Logic.Achievements
                     .Select(y => y.Key)
                     .ToList();
 
-            result.PlayerProgress = yearsOfGamesPlayed.Count();
+            result.PlayerProgress = yearsOfGamesPlayed.Count;
 
             if (result.PlayerProgress < LevelThresholds[AchievementLevel.Bronze])
             {
