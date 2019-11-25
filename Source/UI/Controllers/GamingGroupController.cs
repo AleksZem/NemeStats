@@ -165,18 +165,26 @@ namespace UI.Controllers
             return _gamingGroupRetriever.GetGamingGroupDetails(filter);
         }
 
+        /// <summary>
+        /// Retrieves the gaming group players with the given gaming_group_id.
+        ///
+        /// This method is invoked in UI.Scripts.GamingGroup.gamingGroup.js
+        /// </summary>
+        /// <param name="gamingGroupId"></param>
+        /// <param name="currentUser"></param>
+        /// <param name="dateRangeFilter"></param>
         [HttpGet]
         [UserContext(RequiresGamingGroup = false)]
-        public virtual ActionResult GetGamingGroupPlayers(int id, ApplicationUser currentUser, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null)
+        public virtual ActionResult GetGamingGroupPlayers(int gamingGroupId, ApplicationUser currentUser, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null)
         {
-            var playersWithNemesis = _playerRetriever.GetAllPlayersWithNemesisInfo(id, dateRangeFilter);
+            var playersWithNemesis = _playerRetriever.GetAllPlayersWithNemesisInfo(gamingGroupId, dateRangeFilter);
             var playerIds = playersWithNemesis.Select(x => x.PlayerId).ToList();
             var playerIdToRegisteredUserEmailAddressDictionary =
                 _playerRetriever.GetRegisteredUserEmailAddresses(playerIds, currentUser);
 
             var viewModels = ConstructPlwyerWithNemesisViewModels(currentUser, playersWithNemesis, playerIdToRegisteredUserEmailAddressDictionary);
 
-            ViewBag.canEdit = currentUser.CurrentGamingGroupId == id;
+            ViewBag.canEdit = currentUser.CurrentGamingGroupId == gamingGroupId;
 
             return PartialView(MVC.Player.Views._PlayersPartial, viewModels);
         }
@@ -200,6 +208,13 @@ namespace UI.Controllers
             return viewModels;
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.GamingGroup.gamingGroup.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <param name="dateRangeFilter"></param>
         [HttpGet]
         [UserContext(RequiresGamingGroup = false)]
         public virtual ActionResult GetGamingGroupGameDefinitions(int id, ApplicationUser currentUser, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null)
@@ -216,6 +231,14 @@ namespace UI.Controllers
             return PartialView(MVC.GameDefinition.Views._GameDefinitionsPartial, games);
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.GamingGroup.gamingGroup.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <param name="dateRangeFilter"></param>
+        /// <param name="numberOfItems"></param>
         [HttpGet]
         [UserContext(RequiresGamingGroup = false)]
         public virtual ActionResult GetGamingGroupPlayedGames(int id, ApplicationUser currentUser, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null, [System.Web.Http.FromUri]int numberOfItems = 100)
@@ -260,7 +283,12 @@ namespace UI.Controllers
             return viewModel;
         }
 
-
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.GamingGroup.gamingGroup.js
+        /// </summary>
+        /// <param name="gamingGroupId"></param>
+        /// <param name="dateRangeFilter"></param>
         [HttpGet]
         public virtual ActionResult GetGamingGroupStats(int gamingGroupId, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null)
         {
@@ -269,7 +297,12 @@ namespace UI.Controllers
 
             return PartialView(MVC.GamingGroup.Views._GamingGroupStatsPartial, viewModel);
         }
-
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.GamingGroup.gamingGroup.js
+        /// </summary>
+        /// <param name="gamingGroupId"></param>
+        /// <param name="dateRangeFilter"></param>
         [HttpGet]
         public virtual ActionResult GetRecentChanges(int gamingGroupId, [System.Web.Http.FromUri]BasicDateRangeFilter dateRangeFilter = null)
         {
@@ -304,6 +337,13 @@ namespace UI.Controllers
             return PartialView(MVC.GamingGroup.Views._GamingGroupRecentChanges, viewModel);
         }
 
+        /// <summary>
+        /// 
+        /// Invoked in UI.Scripts.GameDefinition.gameDefinitions.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         [HttpGet]
         [UserContext]
         public virtual ActionResult GetCurrentUserGamingGroupGameDefinitions(int id, ApplicationUser currentUser)

@@ -89,6 +89,12 @@ namespace UI.Controllers
             _homePagePlayerSummaryRetriever = homePagePlayerSummaryRetriever;
         }
 
+        /// <summary>
+        /// This method is invoked in UI.Scripts.player.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         // GET: /Player/Details/5
         [UserContext(RequiresGamingGroup = false)]
         public virtual ActionResult Details(int id, ApplicationUser currentUser)
@@ -124,7 +130,12 @@ namespace UI.Controllers
         {
             return View(MVC.Player.Views.Create, new Player());
         }
-
+        /// <summary>
+        /// This method is invoked in UI.Scripts.player.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         // GET: /Player/InvitePlayer/5
         [Authorize]
         [UserContext]
@@ -174,6 +185,12 @@ namespace UI.Controllers
             return View(MVC.Player.Views.RecentNemesisChanges, recentNemesisChangesViewModels);
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.player.js
+        /// </summary>
+        /// <param name="playerInvitationViewModel"></param>
+        /// <param name="currentUser"></param>
         [HttpPost]
         [Authorize]
         [UserContext]
@@ -195,6 +212,13 @@ namespace UI.Controllers
             return new RedirectResult(Url.Action(MVC.GamingGroup.ActionNames.Index, MVC.GamingGroup.Name));
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.createplayedgame.js
+        /// </summary>
+        /// <param name="createPlayerRequest"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpPost]
         [UserContext]
@@ -223,6 +247,12 @@ namespace UI.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.NotModified);
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.player.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         // GET: /Player/Edit/5
         [Authorize]
         public virtual ActionResult Edit(int? id)

@@ -34,5 +34,31 @@ namespace BusinessLogic.Logic.Points
             }
             return WeightTierEnum.Hardcore;
         }
+
+        public static WeightTierEnum GetTheRealWeightTier(decimal? boardGameGeekAverageWeight)
+        {
+            if (!boardGameGeekAverageWeight.HasValue || boardGameGeekAverageWeight == 0)
+            {
+                return WeightTierEnum.Unknown;
+            }
+            var weight = boardGameGeekAverageWeight.Value;
+            if (weight < BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_EASY)
+            {
+                return WeightTierEnum.Casual;
+            }
+            if (weight < BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_ADVANCED)
+            {
+                return WeightTierEnum.Easy;
+            }
+            if (weight < BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_CHALLENGING)
+            {
+                return WeightTierEnum.Advanced;
+            }
+            if (weight < BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_HARDCORE)
+            {
+                return WeightTierEnum.Challenging;
+            }
+            return WeightTierEnum.Hardcore;
+        }
     }
 }
