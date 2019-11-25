@@ -201,7 +201,6 @@ namespace BusinessLogic.Jobs.BoardGameGeekBatchUpdate
                 .Include(g => g.Mechanics)
                 .Where(x => x.Id > startId)
                 .OrderBy(x => x.Id)
-                //TODO this was a hack to prevent timeouts
                 .Take(1000)
                 .ToList();
             var totalGamesUpdated = UpdateBoardGameGeekDefinitions(allExistingBoardGameGeekGameDefinitions);
@@ -217,22 +216,9 @@ namespace BusinessLogic.Jobs.BoardGameGeekBatchUpdate
                 //delay between BGG calls to decrease likelyhood of getting blocked by BGG
                 Thread.Sleep(400);
                 var gameDetails = _boardGameGeekApiClient.GetGameDetails(existingBoardGameGeekGameDefinition.Id);
-
                 if (gameDetails != null)
                 {
-
-                    existingBoardGameGeekGameDefinition.DateUpdated = DateTime.UtcNow;
-                    existingBoardGameGeekGameDefinition.AverageWeight = gameDetails.AverageWeight;
-                    existingBoardGameGeekGameDefinition.Description = gameDetails.Description;
-                    existingBoardGameGeekGameDefinition.MaxPlayTime = gameDetails.MaxPlayTime;
-                    existingBoardGameGeekGameDefinition.MinPlayTime = gameDetails.MinPlayTime;
-                    existingBoardGameGeekGameDefinition.MaxPlayers = gameDetails.MaxPlayers;
-                    existingBoardGameGeekGameDefinition.MinPlayers = gameDetails.MinPlayers;
-                    existingBoardGameGeekGameDefinition.Name = gameDetails.Name;
-                    existingBoardGameGeekGameDefinition.Thumbnail = gameDetails.Thumbnail;
-                    existingBoardGameGeekGameDefinition.Image = gameDetails.Image;
-                    existingBoardGameGeekGameDefinition.YearPublished = gameDetails.YearPublished;
-
+                    UpdateBGGDefScalars(existingBoardGameGeekGameDefinition, gameDetails);
                     foreach (var gameCategory in gameDetails.Categories)
                     {
                         if (CategoryDoesntExistInGamesCategoryList(existingBoardGameGeekGameDefinition, gameCategory.Category))
@@ -241,7 +227,6 @@ namespace BusinessLogic.Jobs.BoardGameGeekBatchUpdate
                             existingBoardGameGeekGameDefinition.Categories.Add(category);
                         }
                     }
-
                     foreach (var gameMechanic in gameDetails.Mechanics)
                     {
                         if (MechanicDoesntExistInGamesMechanicsList(existingBoardGameGeekGameDefinition, gameMechanic.Mechanic))
@@ -250,7 +235,6 @@ namespace BusinessLogic.Jobs.BoardGameGeekBatchUpdate
                             existingBoardGameGeekGameDefinition.Mechanics.Add(mechanic);
                         }
                     }
-
                     _dataContext.AdminSave(existingBoardGameGeekGameDefinition);
                     if (totalGamesUpdated++ % 10 == 0)
                     {
@@ -261,8 +245,22 @@ namespace BusinessLogic.Jobs.BoardGameGeekBatchUpdate
             }
             _dataContext.CommitAllChanges();
             Debug.WriteLine($@"Done. Updated a total of {totalGamesUpdated} BoardGameGeekGameDefinitions.");
-
             return totalGamesUpdated;
+        }
+
+        private static void UpdateBGGDefScalars(BoardGameGeekGameDefinition existingBoardGameGeekGameDefinition, GameDetails gameDetails)
+        {
+            existingBoardGameGeekGameDefinition.DateUpdated = DateTime.UtcNow;
+            existingBoardGameGeekGameDefinition.AverageWeight = gameDetails.AverageWeight;
+            existingBoardGameGeekGameDefinition.Description = gameDetails.Description;
+            existingBoardGameGeekGameDefinition.MaxPlayTime = gameDetails.MaxPlayTime;
+            existingBoardGameGeekGameDefinition.MinPlayTime = gameDetails.MinPlayTime;
+            existingBoardGameGeekGameDefinition.MaxPlayers = gameDetails.MaxPlayers;
+            existingBoardGameGeekGameDefinition.MinPlayers = gameDetails.MinPlayers;
+            existingBoardGameGeekGameDefinition.Name = gameDetails.Name;
+            existingBoardGameGeekGameDefinition.Thumbnail = gameDetails.Thumbnail;
+            existingBoardGameGeekGameDefinition.Image = gameDetails.Image;
+            existingBoardGameGeekGameDefinition.YearPublished = gameDetails.YearPublished;
         }
 
         private BoardGameGeekGameMechanic GetOrCreateMechanic(GameMechanic gameMechanic)
