@@ -23,11 +23,7 @@ Views.GamingGroup.GamingGroupView = function () {
         recentTabId: null,
         recentDivId: null
     };
-    // These are routed methods that act as an HttpGet. They are viewable in GameingGroupController.cs
-    // I wonder if there's a better way to do this 
-
-    // Making a namechange here could cause problems. This is a negative in terms of maintainability.
-
+    // These are routed methods that act as an HttpGet. They are viewable in GameingGroupController.
     this._getGamingGroupPlayersServiceAddress = "/GamingGroup/GetGamingGroupPlayers/";
     this._getGamingGroupGameDefinitionsServiceAddress = "/GamingGroup/GetGamingGroupGameDefinitions/";
     this._getGamingGroupPlayedGamesServiceAddress = "/GamingGroup/GetGamingGroupPlayedGames/";
@@ -54,10 +50,9 @@ Views.GamingGroup.GamingGroupView.prototype = {
         var owner = this;
         this._googleAnalytics = gaObject;
 
-        // Validate
+        // Validate the options passed into the function.
         owner.validateOptions(options);
-
-        // lots of date picking bullshit
+   
         this.$fromDatePicker = $("#from-date-picker");
         this.$toDatePicker = $("#to-date-picker");
         var minDate = new Date(2000, 0, 1); // Hard coded values?
@@ -93,7 +88,7 @@ Views.GamingGroup.GamingGroupView.prototype = {
             }).datepicker("setDate", this._settings.toDate)
               .datepicker("option", "dateFormat", "yy-mm-dd");
         }
-        // end date picking bullshit
+
 
         var $playersTab = $("#" + this._settings.playersTabId);
         $playersTab.click((function (event) {

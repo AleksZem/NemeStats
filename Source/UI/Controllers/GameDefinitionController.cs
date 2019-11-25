@@ -126,7 +126,7 @@ namespace UI.Controllers
                             ReturnUrl = returnUrl
                         });
         }
-
+        
         // POST: /GameDefinition/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -277,7 +277,11 @@ namespace UI.Controllers
 
             return View(MVC.GameDefinition.Views._CreatePartial, new CreateGameDefinitionViewModel() { BGGUserName = bggUser?.Name, GamingGroupId = currentUser.CurrentGamingGroupId.Value });
         }
-
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.createplayedgame.js
+        /// </summary>
+        /// <param name="searchText"></param>
         [Authorize]
         [HttpGet]
         [UserContext]
@@ -297,6 +301,13 @@ namespace UI.Controllers
             return new HttpStatusCodeResult(HttpStatusCode.NotModified);
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.createplayedgame.js
+        /// </summary>
+        /// <param name="q"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         [Authorize]
         [HttpGet]
         [UserContext]

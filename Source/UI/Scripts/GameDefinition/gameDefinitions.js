@@ -19,6 +19,7 @@ Views.GameDefinition.GameDefinitions.prototype = {
         if (container.length === 1) {
             container
                 .fadeOut('fast')
+                // Invokes an endpoint method defined in UI.Controller.GamingGroupController.cs 
                 .load('/GamingGroup/GetCurrentUserGamingGroupGameDefinitions?id=' + gamingGroupId)
                 .fadeIn('fast');
         }

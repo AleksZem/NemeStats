@@ -43,15 +43,8 @@ namespace BusinessLogic.Logic.Achievements
                     .GetQueryable<PlayerGameResult>()
                     .Where(x => x.PlayerId == playerId)
                     .GroupBy(x => new {
-                        WeightTier = x.PlayedGame.GameDefinition.BoardGameGeekGameDefinition.AverageWeight
-                                        < WeightTierCalculator.BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_EASY ? WeightTierEnum.Casual :
-                                        x.PlayedGame.GameDefinition.BoardGameGeekGameDefinition.AverageWeight
-                                        < WeightTierCalculator.BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_ADVANCED ? WeightTierEnum.Easy :
-                                        x.PlayedGame.GameDefinition.BoardGameGeekGameDefinition.AverageWeight
-                                        < WeightTierCalculator.BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_CHALLENGING ? WeightTierEnum.Challenging :
-                                        x.PlayedGame.GameDefinition.BoardGameGeekGameDefinition.AverageWeight
-                                        < WeightTierCalculator.BOARD_GAME_GEEK_WEIGHT_INCLUSIVE_LOWER_BOUND_FOR_HARDCORE ? WeightTierEnum.Advanced :
-                                        WeightTierEnum.Hardcore
+                        // World's best change
+                        WeightTier = WeightTierCalculator.GetTheRealWeightTier(x.PlayedGame.GameDefinition.BoardGameGeekGameDefinition.AverageWeight)
                     })
                     .Select(group => new { group.Key, Count = group.Count() })
                     .ToList();

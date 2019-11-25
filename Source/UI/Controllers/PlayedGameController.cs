@@ -86,6 +86,13 @@ namespace UI.Controllers
             _createGameDefinitionComponent = createGameDefinitionComponent;
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.createplayedgame.js
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         // GET: /PlayedGame/Details/5
         [UserContext(RequiresGamingGroup = false)]
         public virtual ActionResult Details(int? id, ApplicationUser currentUser)
@@ -183,6 +190,13 @@ namespace UI.Controllers
             return viewModel;
         }
 
+        /// <summary>
+        /// 
+        /// This method is invoked in UI.Scripts.createplayedgame.js
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="currentUser"></param>
+        /// <returns></returns>
         // POST: /PlayedGame/Save
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
